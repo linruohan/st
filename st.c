@@ -45,6 +45,7 @@
 #define TLINE(y)               ((y) < term.scr ? term.hist[((y) + term.histi - \
                                term.scr + HISTSIZE + 1) % HISTSIZE] : \
                                term.line[(y) - term.scr])
+
 // from @LukeSmithxyz
 #define TLINE_HIST(y)           ((y) <= HISTSIZE-term.row+2 ? term.hist[(y)] : term.line[(y-HISTSIZE+term.row-3)])
 
@@ -2105,6 +2106,7 @@ externalpipe(const Arg *arg)
 	/* restore */
 	signal(SIGPIPE, oldsigpipe);
 }
+
 
 void
 tprinter(char *s, size_t len)
