@@ -1,7 +1,6 @@
 # st version
 VERSION = 0.8.3
 
-
 # Customize below to fit your system
 
 # paths
