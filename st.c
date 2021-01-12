@@ -36,17 +36,15 @@
 #define STR_BUF_SIZ   ESC_BUF_SIZ
 #define STR_ARG_SIZ   ESC_ARG_SIZ
 #define HISTSIZE      2000
-
 /* macros */
 #define IS_SET(flag)		((term.mode & (flag)) != 0)
 #define ISCONTROLC0(c)		(BETWEEN(c, 0, 0x1f) || (c) == 0x7f)
 #define ISCONTROLC1(c)		(BETWEEN(c, 0x80, 0x9f))
 #define ISCONTROL(c)		(ISCONTROLC0(c) || ISCONTROLC1(c))
 #define ISDELIM(u)		(u && wcschr(worddelimiters, u))
-#define TLINE(y)		((y) < term.scr ? term.hist[((y) + term.histi - \
-				term.scr + HISTSIZE + 1) % HISTSIZE] : \
-				term.line[(y) - term.scr])
-
+#define TLINE(y)               ((y) < term.scr ? term.hist[((y) + term.histi - \
+                               term.scr + HISTSIZE + 1) % HISTSIZE] : \
+                               term.line[(y) - term.scr])
 // from @LukeSmithxyz
 #define TLINE_HIST(y)           ((y) <= HISTSIZE-term.row+2 ? term.hist[(y)] : term.line[(y-HISTSIZE+term.row-3)])
 
@@ -426,10 +424,10 @@ tlinelen(int y)
 {
 	int i = term.col;
 
-	if (TLINE(y)[i - 1].mode & ATTR_WRAP)
+	if (TLINE(y)[i - 1].mode & ATTR_WRAP)	
 		return i;
 
-	while (i > 0 && TLINE(y)[i - 1].u == ' ')
+	while (i > 0 && TLINE(y)[i - 1].u == ' ')		
 		--i;
 
 	return i;
@@ -553,14 +551,14 @@ selsnap(int *x, int *y, int direction)
 					yt = *y, xt = *x;
 				else
 					yt = newy, xt = newx;
-				if (!(TLINE(yt)[xt].mode & ATTR_WRAP))
+				if (!(TLINE(yt)[xt].mode & ATTR_WRAP))	
 					break;
 			}
 
 			if (newx >= tlinelen(newy))
 				break;
 
-			gp = &TLINE(newy)[newx];
+			gp = &TLINE(newy)[newx];	
 			delim = ISDELIM(gp->u);
 			if (!(gp->mode & ATTR_WDUMMY) && (delim != prevdelim
 					|| (delim && gp->u != prevgp->u)))
@@ -1076,34 +1074,34 @@ tswapscreen(void)
 void
 kscrolldown(const Arg* a)
 {
-	int n = a->i;
+       int n = a->i;
 
-	if (n < 0)
-		n = term.row + n;
+       if (n < 0)
+               n = term.row + n;
 
-	if (n > term.scr)
-		n = term.scr;
+       if (n > term.scr)
+               n = term.scr;
 
-	if (term.scr > 0) {
-		term.scr -= n;
-		selscroll(0, -n);
-		tfulldirt();
-	}
+       if (term.scr > 0) {
+               term.scr -= n;
+               selscroll(0, -n);
+               tfulldirt();
+       }
 }
 
 void
 kscrollup(const Arg* a)
 {
-	int n = a->i;
+       int n = a->i;
 
-	if (n < 0)
-		n = term.row + n;
+       if (n < 0)
+               n = term.row + n;
 
-	if (term.scr <= HISTSIZE-n) {
-		term.scr += n;
-		selscroll(0, n);
-		tfulldirt();
-	}
+       if (term.scr <= HISTSIZE-n) {
+               term.scr += n;
+               selscroll(0, n);
+               tfulldirt();
+       }
 }
 
 void
@@ -1114,12 +1112,12 @@ tscrolldown(int orig, int n, int copyhist)
 
 	LIMIT(n, 0, term.bot-orig+1);
 
-	if (copyhist) {
-		term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE;
-		temp = term.hist[term.histi];
-		term.hist[term.histi] = term.line[term.bot];
-		term.line[term.bot] = temp;
-	}
+        if (copyhist) {
+                term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE;
+                temp = term.hist[term.histi];
+                term.hist[term.histi] = term.line[term.bot];
+                term.line[term.bot] = temp;
+        }
 
 	tsetdirt(orig, term.bot-n);
 	tclearregion(0, term.bot-n+1, term.col-1, term.bot);
@@ -1141,15 +1139,16 @@ tscrollup(int orig, int n, int copyhist)
 
 	LIMIT(n, 0, term.bot-orig+1);
 
-	if (copyhist) {
-		term.histi = (term.histi + 1) % HISTSIZE;
-		temp = term.hist[term.histi];
-		term.hist[term.histi] = term.line[orig];
-		term.line[orig] = temp;
-	}
+	
+       if (copyhist) {
+               term.histi = (term.histi + 1) % HISTSIZE;
+               temp = term.hist[term.histi];
+               term.hist[term.histi] = term.line[orig];
+               term.line[orig] = temp;
+       }
 
-	if (term.scr > 0 && term.scr < HISTSIZE)
-		term.scr = MIN(term.scr + n, HISTSIZE-1);
+       if (term.scr > 0 && term.scr < HISTSIZE)
+               term.scr = MIN(term.scr + n, HISTSIZE-1);
 
 	tclearregion(0, orig, term.col-1, orig+n-1);
 	tsetdirt(orig+n, term.bot);
@@ -1798,11 +1797,11 @@ csihandle(void)
 		break;
 	case 'S': /* SU -- Scroll <n> line up */
 		DEFAULT(csiescseq.arg[0], 1);
-		tscrollup(term.top, csiescseq.arg[0], 0);
+		tscrollup(term.top, csiescseq.arg[0],0);
 		break;
 	case 'T': /* SD -- Scroll <n> line down */
 		DEFAULT(csiescseq.arg[0], 1);
-		tscrolldown(term.top, csiescseq.arg[0], 0);
+		tscrolldown(term.top, csiescseq.arg[0],0);
 		break;
 	case 'L': /* IL -- Insert <n> blank lines */
 		DEFAULT(csiescseq.arg[0], 1);
@@ -2652,14 +2651,15 @@ tresize(int col, int row)
 	term.alt  = xrealloc(term.alt,  row * sizeof(Line));
 	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
 	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
+	
+        for (i = 0; i < HISTSIZE; i++) {
+                term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
+                for (j = mincol; j < col; j++) {
+                        term.hist[i][j] = term.c.attr;
+                        term.hist[i][j].u = ' ';
+                }
+        }
 
-	for (i = 0; i < HISTSIZE; i++) {
-		term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
-		for (j = mincol; j < col; j++) {
-			term.hist[i][j] = term.c.attr;
-			term.hist[i][j].u = ' ';
-		}
-	}
 
 	/* resize each row to new width, zero-pad if needed */
 	for (i = 0; i < minrow; i++) {
@@ -2719,7 +2719,7 @@ drawregion(int x1, int y1, int x2, int y2)
 			continue;
 
 		term.dirty[y] = 0;
-		xdrawline(TLINE(y), x1, y, x2);
+		xdrawline(TLINE(y), x1, y, x2);	
 	}
 }
 
@@ -2740,9 +2740,10 @@ draw(void)
 		cx--;
 
 	drawregion(0, 0, term.col, term.row);
-	xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
-			term.ocx, term.ocy, term.line[term.ocy][term.ocx],
-			term.line[term.ocy], term.col);
+	if (term.scr == 0)
+               xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
+                               term.ocx, term.ocy, term.line[term.ocy][term.ocx],
+				term.line[term.ocy], term.col);	
 	term.ocx = cx;
 	term.ocy = term.c.y;
 	xfinishdraw();
